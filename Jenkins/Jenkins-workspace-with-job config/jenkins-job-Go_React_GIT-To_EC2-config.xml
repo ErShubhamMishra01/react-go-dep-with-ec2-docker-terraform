@@ -1,0 +1,89 @@
+
+<project>
+<actions/>
+<description/>
+<keepDependencies>false</keepDependencies>
+<properties/>
+<scm class="hudson.plugins.git.GitSCM" plugin="git@5.0.0">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>https://github.com/TechVerito-Software-Solutions-LLP/devops-fullstack-app.git</url>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/main</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class="empty-list"/>
+<extensions/>
+</scm>
+<canRoam>true</canRoam>
+<disabled>true</disabled>
+<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+<triggers>
+<hudson.triggers.SCMTrigger>
+<spec>* * * * *</spec>
+<ignorePostCommitHooks>false</ignorePostCommitHooks>
+</hudson.triggers.SCMTrigger>
+</triggers>
+<concurrentBuild>false</concurrentBuild>
+<builders>
+<hudson.tasks.Shell>
+<command>cd frontend npm install echo "REACT_APP_SERVER_URL=http://43.205.144.73:8080/employees" > .env #cat .env npm run build mkdir ../app mkdir 
+../app/frontend ls mkdir ../app/backend mv build/* ../app/frontend/ cd ../backend go get ./... CGO_ENABLED=0 GOOS=linux go build -o 
+../app/backend/go_backeend_executer ls ../app/backend/ ls ../app/frontend/ echo "Build step execution completed."</command>
+<configuredLocalRules/>
+</hudson.tasks.Shell>
+</builders>
+<publishers>
+<jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin plugin="publish-over-ssh@1.24">
+<consolePrefix>SSH: </consolePrefix>
+<delegate plugin="publish-over@0.22">
+<publishers>
+<jenkins.plugins.publish__over__ssh.BapSshPublisher plugin="publish-over-ssh@1.24">
+<configName>go_test_dep_instance</configName>
+<verbose>false</verbose>
+<transfers>
+<jenkins.plugins.publish__over__ssh.BapSshTransfer>
+<remoteDirectory/>
+<sourceFiles>**/app/**</sourceFiles>
+<excludes/>
+<removePrefix/>
+<remoteDirectorySDF>false</remoteDirectorySDF>
+<flatten>false</flatten>
+<cleanRemote>false</cleanRemote>
+<noDefaultExcludes>false</noDefaultExcludes>
+<makeEmptyDirs>false</makeEmptyDirs>
+<patternSeparator>[, ]+</patternSeparator>
+<execCommand>docker-compose restart</execCommand>
+<execTimeout>120000</execTimeout>
+<usePty>false</usePty>
+<useAgentForwarding>false</useAgentForwarding>
+<useSftpForExec>false</useSftpForExec>
+</jenkins.plugins.publish__over__ssh.BapSshTransfer>
+</transfers>
+<useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+<usePromotionTimestamp>false</usePromotionTimestamp>
+</jenkins.plugins.publish__over__ssh.BapSshPublisher>
+</publishers>
+<continueOnError>false</continueOnError>
+<failOnError>true</failOnError>
+<alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+<hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" reference="../.."/>
+</delegate>
+</jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin>
+</publishers>
+<buildWrappers>
+<jenkins.plugins.nodejs.NodeJSBuildWrapper plugin="nodejs@1.6.0">
+<nodeJSInstallationName>NodeJS 20.4.0</nodeJSInstallationName>
+<cacheLocationStrategy class="jenkins.plugins.nodejs.cache.DefaultCacheLocationLocator"/>
+</jenkins.plugins.nodejs.NodeJSBuildWrapper>
+<org.jenkinsci.plugins.golang.GolangBuildWrapper plugin="golang@1.4">
+<goVersion>Go</goVersion>
+</org.jenkinsci.plugins.golang.GolangBuildWrapper>
+</buildWrappers>
+</project>

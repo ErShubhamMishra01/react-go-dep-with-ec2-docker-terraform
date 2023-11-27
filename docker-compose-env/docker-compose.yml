@@ -1,0 +1,54 @@
+version: "3"
+services:
+  frontend_nginx:
+    container_name: nginx
+    image: nginx:mainline
+    restart: always
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./log/nginx/:/var/log/nginx/
+      - ./app/frontend:/app/frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend_go
+    networks:
+      - go_net
+
+  backend_go:
+    container_name: go
+    image: golang:1.19.10
+    command: bash -c "DB_HOST=db_postgres DB_USER=shubham DB_PASSWORD=56gj#5fg DB_NAME=test DB_PORT=5432 ALLOWED_ORIGINS=* /app/backend/go_backeend_executer"
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app/backend:/app/backend
+    depends_on:
+      - db_postgres
+    networks:
+      - go_net
+
+  db_postgres:
+    container_name: db_postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: shubham
+      POSTGRES_PASSWORD: 56gj#5fg
+      POSTGRES_DB: test
+    ports:
+      - '5432:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - go_net
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  go_net:
+
+
